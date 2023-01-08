@@ -1,28 +1,23 @@
 import { useForm } from "react-hook-form";
 
-interface IForm {
-  email: string;
-  password: string;
-  password1: string;
-  extraErrors?: string;
-}
-
-function SignUp() {
+function AuthForm({ handleAuth }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
     watch,
-  } = useForm<IForm>();
+  } = useForm({ mode: "onChange" });
 
-  const onValid = (data: IForm) => {
-    if (data.password !== data.password1) {
+  const onValid = ({ email, password, password1 }) => {
+    if (password !== password1) {
       return setError(
         "password1",
         { message: "비밀번호가 일치하지 않습니다." },
         { shouldFocus: true }
       );
+    } else {
+      handleAuth({ email, password });
     }
   };
 
@@ -72,11 +67,11 @@ function SignUp() {
         />
         <span>{errors?.password1?.message}</span>
 
-        <button>회원가입</button>
+        <button>계정 만들기</button>
         <span>{errors?.extraErrors?.message}</span>
       </form>
     </div>
   );
 }
 
-export default SignUp;
+export default AuthForm;
